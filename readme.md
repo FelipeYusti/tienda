@@ -5,7 +5,7 @@
 
 =================================================================
 
-- Usaremos 2 arquitecturos : Orientada a Servicios (API REST) para el Backend
+- Usaremos 2 arquitecturas : Orientada a Servicios (API REST) para el Backend
 - Iternamente usaremos el MVC ( Tenga en cuenta que las vistas se replanzan por EndPoints o RUTAS)
 
 1- Creamos las carpetas para el MVC (controllers,models,rutas).
