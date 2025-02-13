@@ -7,7 +7,10 @@ const router = express.Router();
 const productoCrt = require("../controllers/productos.js");
 
 // rutas que entregara el modulo producto
-router.get("/producto/listartodos", productoCrt.getProductos);
 router.post("/producto/nuevo", productoCrt.setProducto);
-router.put("/producto/actualizar", productoCrt.updateProducto);
+router.get("/producto/listartodos", productoCrt.getProductos);
+router.get("/producto/buscarxid/:id", productoCrt.searchById);
+router.put("/producto/actualizar/:id", productoCrt.updateProducto);
+router.delete("/producto/borrarxid/:id", productoCrt.deleteById);
+
 module.exports = router;
