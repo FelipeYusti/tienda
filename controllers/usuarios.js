@@ -22,14 +22,14 @@ const setUsuario = async (req, res) => {
   // llega el objeto en el body del request.
   let data = {
     nombre: req.body.nombre,
-    descripcion: req.body.descripcion,
-    imagen: req.body.imagen,
-    marca: req.body.marca,
-    precio: req.body.precio,
-    existencia: req.body.existencia,
-    rating: req.body.rating,
-    numRevisiones: req.body.numRevisiones,
-    estadoOfertado: req.body.estadoOfertado,
+    email: req.body.email,
+    passwordHash: req.body.passwordHash,
+    telefono: req.body.telefono,
+    esAdmin: req.body.esAdmin,
+    direccion: req.body.direccion,
+    zip: req.body.zip,
+    ciudad: req.body.ciudad,
+    pais: req.body.pais,
   };
   try {
     const usuarioCreate = new Usuario(data);
@@ -50,18 +50,17 @@ const updateUsuario = async (req, res) => {
   let id = req.params.id;
   let data = {
     nombre: req.body.nombre,
-    descripcion: req.body.descripcion,
-    imagen: req.body.imagen,
-    marca: req.body.marca,
-    precio: req.body.precio,
-    existencia: req.body.existencia,
-    rating: req.body.rating,
-    numRevisiones: req.body.numRevisiones,
-    estadoOfertado: req.body.estadoOfertado,
+    email: req.body.email,
+    passwordHash: req.body.passwordHash,
+    telefono: req.body.telefono,
+    esAdmin: req.body.esAdmin,
+    direccion: req.body.direccion,
+    zip: req.body.zip,
+    ciudad: req.body.ciudad,
+    pais: req.body.pais,
   };
   try {
     let usuarioUpdate = await Usuario.findByIdAndUpdate(id, data);
-
     return res.send({
       estado: true,
       mensaje: "Actualizacion Exitosa!",
@@ -74,7 +73,6 @@ const updateUsuario = async (req, res) => {
     });
   }
 };
-
 // buscar por ID o otro parametro
 const searchById = async (req, res) => {
   //let id=0;
