@@ -1,6 +1,8 @@
 // controlador para el manejo de los Usuarios
 // conectamos el controlador con su modelo correspondiente
+const usuarios = require("../models/usuarios.js");
 const Usuario = require("../models/usuarios.js");
+const bcrypt = require("bcryptjs");
 
 const getUsuarios = async (req, res) => {
   try {
@@ -23,7 +25,7 @@ const setUsuario = async (req, res) => {
   let data = {
     nombre: req.body.nombre,
     email: req.body.email,
-    passwordHash: req.body.passwordHash,
+    passwordHash: bcrypt.hashSync(req.body.passwordHash, 10),
     telefono: req.body.telefono,
     esAdmin: req.body.esAdmin,
     direccion: req.body.direccion,
@@ -31,18 +33,27 @@ const setUsuario = async (req, res) => {
     ciudad: req.body.ciudad,
     pais: req.body.pais,
   };
+  // validamos si el usuario ya esta registrado
+  const usuarioExiste = await usuarios.findOne({ email: data.email });
+
+  if (usuarioExiste) {
+    return res.send({
+      estado: false,
+      mensaje: "el usuario ya existe en el sistema",
+    });
+  }
+
   try {
-    const usuarioCreate = new Usuario(data);
-    usuarioCreate.save(); // salvamos el mongo.
+    const usuarioNuevo = new usuarios(data);
+    await usuarioNuevo.save();
     return res.send({
       estado: true,
-      mensaje: "¡Insercion Exitosa!",
+      mensaje: "usuario creado exitosamente",
     });
   } catch (error) {
     return res.send({
       estado: false,
-      mensaje: `Error en la Insercion: ${error}`,
-      error: error,
+      mensaje: `error ${error}`,
     });
   }
 };
@@ -51,7 +62,6 @@ const updateUsuario = async (req, res) => {
   let data = {
     nombre: req.body.nombre,
     email: req.body.email,
-    passwordHash: req.body.passwordHash,
     telefono: req.body.telefono,
     esAdmin: req.body.esAdmin,
     direccion: req.body.direccion,
@@ -97,7 +107,6 @@ const searchById = async (req, res) => {
     });
   }
 };
-// actualizadr de acuerdo al ID
 
 // Eliminar de acuerdo al ID :: RECUERDE QUE ES SOLO DE USO DIDACTICO.
 const deleteById = async (req, res) => {
@@ -117,10 +126,34 @@ const deleteById = async (req, res) => {
     });
   }
 };
+
+const login = async (req, res) => {
+  let usuarioExiste = await usuarios.findOne({ email: req.body.email });
+
+  if (!usuarioExiste) {
+    return res.send({
+      estado: false,
+      mensaje: "no existe el usuario",
+    });
+  }
+
+  if (bcrypt.compareSync(req.body.clave, usuarios.passwordHash)) {
+    return res.send({
+      estado: true,
+      mensaje: "ok",
+    });
+  } else {
+    return res.send({
+      estado: false,
+      mensaje: "no",
+    });
+  }
+};
 module.exports = {
   getUsuarios,
   setUsuario,
   updateUsuario,
   searchById,
   deleteById,
+  login,
 };
