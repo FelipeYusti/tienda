@@ -12,5 +12,6 @@ router.get("/usuario/listartodos", usuarioCrt.getUsuarios);
 router.get("/usuario/buscarxid/:id", usuarioCrt.searchById);
 router.put("/usuario/actualizar/:id", usuarioCrt.updateUsuario);
 router.delete("/usuario/borrarxid/:id", usuarioCrt.deleteById);
+router.post("/usuario/login/", usuarioCrt.login);
 
 module.exports = router;

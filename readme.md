@@ -9,4 +9,4 @@
 - Iternamente usaremos el MVC ( Tenga en cuenta que las vistas se replanzan por EndPoints o RUTAS)
 
 1- Creamos las carpetas para el MVC (controllers,models,rutas).
-2- Instalamos los paquetes claves : npm i nodemon express cors mongoose.
+2- Instalamos los paquetes claves : npm i nodemon express cors mongoose bcryptjs jsonwebtoken multer.
