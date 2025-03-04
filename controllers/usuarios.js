@@ -3,6 +3,9 @@
 const Usuario = require("../models/usuarios.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fs = require("fs"); // fs: File System
+const path = require("path"); // modulo nativo de node :  ultil para el manejo de las rutas
+const usuarios = require("../models/usuarios.js");
 const getUsuarios = async (req, res) => {
   try {
     // consultador todo sin filtro
@@ -181,11 +184,77 @@ const login = async (req, res) => {
     });
   }
 };
+//sube la imagen del usuario
+
+const subirImagen = async (req, res) => {
+  try {
+    // Validar si se subió un archivo
+    if (!req.file) {
+      return res.status(400).json({
+        estado: false,
+        mensaje: "No se ha subido ninguna imagen",
+      });
+    }
+
+    const { originalname, filename, path } = req.file;
+    const extension = originalname.split(".").pop().toLowerCase();
+    // Validar extensión de la imagen
+    const extensionesValidas = ["png", "jpg", "jpeg", "gif"];
+    if (!extensionesValidas.includes(extension)) {
+      await fs.unlink(path); // Eliminar archivo inválido
+      return res.status(400).json({
+        estado: false,
+        mensaje: "Extensión de archivo no permitida",
+      });
+    }
+
+    // Actualizar usuario con la imagen subida
+    const usuarioActualizado = await usuarios.findByIdAndUpdate(req.body.id, {
+      imagen: filename,
+    });
+
+    return res.status(200).json({
+      estado: true,
+      user: usuarioActualizado,
+      //file: req.file,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      estado: false,
+      nensaje: "Error al procesar la imagen",
+      error: error.message,
+    });
+  }
+};
+
+// retorna la ruta de la imagen
+const avatar = (req, res) => {
+  // Sacar el parametro de la url
+  const file = req.params.file;
+
+  // Montar el path real de la imagen
+  const filePath = "./uploads/usuarios/" + file;
+
+  // Comprobar que existe
+  fs.stat(filePath, (error, exists) => {
+    if (!exists) {
+      return res.status(404).send({
+        status: "error",
+        message: "No existe la imagen",
+      });
+    }
+
+    // Devolver un file
+    return res.sendFile(path.resolve(filePath));
+  });
+};
 module.exports = {
   getUsuarios,
   setUsuario,
   updateUsuario,
   searchById,
   deleteById,
+  subirImagen,
+  avatar,
   login,
 };

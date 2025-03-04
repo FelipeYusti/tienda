@@ -140,5 +140,6 @@ module.exports = {
   setProducto,
   updateProducto,
   searchById,
+  
   deleteById,
 };
